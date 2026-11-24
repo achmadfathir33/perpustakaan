@@ -13,7 +13,9 @@
         nav.navbar ul.nav-links li a { color: #cbd5e1; text-decoration: none; padding: 6px 4px; display: inline-block; }
         nav.navbar ul.nav-links li a:hover { color: #fff; }
         nav.navbar ul.nav-links li a.active { color: #fff; font-weight: bold; border-bottom: 2px solid #fff; }
-        nav.navbar ul.nav-links li a.disabled { color: #94a3b8; cursor: not-allowed; }
+        nav .navbar-user { display: flex; align-items: center; gap: 12px; color: #cbd5e1; font-size: 14px; }
+        nav .btn-logout { background: none; border: 1px solid #cbd5e1; color: #cbd5e1; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        nav .btn-logout:hover { background: #1e40af; color: #fff; }
         main { max-width: 900px; margin: 0 auto; padding: 30px 40px; min-height: 65vh; }
         table { border-collapse: collapse; width: 100%; margin-top: 16px; }
         th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }

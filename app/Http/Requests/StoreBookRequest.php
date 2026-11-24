@@ -1,69 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Requests;
 
-use App\Http\Requests\StoreBookRequest;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
 
-class BookController extends Controller
+class StoreBookRequest extends FormRequest
 {
-    private array $categories = [
-        ['id' => 1, 'nama_kategori' => 'Fiksi'],
-        ['id' => 2, 'nama_kategori' => 'Teknologi'],
-        ['id' => 3, 'nama_kategori' => 'Sejarah'],
-    ];
-
-    private array $books = [
-        ['id' => 1, 'judul' => 'Laskar Pelangi', 'penulis' => 'Andrea Hirata', 'penerbit' => 'Bentang Pustaka', 'tahun_terbit' => 2005, 'isbn' => '9789793062792', 'stok' => 5, 'category_id' => 1, 'kategori' => 'Fiksi'],
-        ['id' => 2, 'judul' => 'Bumi Manusia', 'penulis' => 'Pramoedya Ananta Toer', 'penerbit' => 'Hasta Mitra', 'tahun_terbit' => 1980, 'isbn' => '9789794330746', 'stok' => 3, 'category_id' => 1, 'kategori' => 'Fiksi'],
-        ['id' => 3, 'judul' => 'Clean Code', 'penulis' => 'Robert C. Martin', 'penerbit' => 'Prentice Hall', 'tahun_terbit' => 2008, 'isbn' => '9780132350884', 'stok' => 7, 'category_id' => 2, 'kategori' => 'Teknologi'],
-    ];
-
-    public function index()
+    public function authorize(): bool
     {
-        $books = $this->books;
-
-        return view('books.index', compact('books'));
+        return true;
     }
 
-    public function create()
+    /**
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
     {
-        $categories = $this->categories;
-
-        return view('books.create', compact('categories'));
-    }
-
-    public function store(StoreBookRequest $request)
-    {
-        $validated = $request->validated();
-
-        return redirect()->route('books.index')
-            ->with('success', "Buku \"{$validated['judul']}\" berhasil ditambahkan (data dummy, belum tersimpan ke database).");
-    }
-
-    public function show(string $id)
-    {
-        $book = collect($this->books)->firstWhere('id', (int) $id);
-
-        abort_if(! $book, 404);
-
-        return view('books.show', compact('book'));
-    }
-
-    public function edit(string $id)
-    {
-        $book = collect($this->books)->firstWhere('id', (int) $id);
-
-        abort_if(! $book, 404);
-
-        $categories = $this->categories;
-
-        return view('books.edit', compact('book', 'categories'));
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $validated = $request->validate([
+        return [
             'judul' => 'required|string|max:200',
             'penulis' => 'required|string|max:100',
             'penerbit' => 'required|string|max:100',
@@ -71,15 +25,25 @@ class BookController extends Controller
             'isbn' => 'nullable|string|max:20',
             'stok' => 'required|integer|min:0',
             'category_id' => 'required|integer',
-        ]);
-
-        return redirect()->route('books.index')
-            ->with('success', "Buku \"{$validated['judul']}\" berhasil diperbarui (data dummy, belum tersimpan ke database).");
+        ];
     }
 
-    public function destroy(string $id)
+    public function messages(): array
     {
-        return redirect()->route('books.index')
-            ->with('success', "Buku dengan id {$id} berhasil dihapus (data dummy, belum tersimpan ke database).");
+        return [
+            'judul.required' => 'Judul buku wajib diisi.',
+            'judul.max' => 'Judul buku maksimal 200 karakter.',
+            'penulis.required' => 'Nama penulis wajib diisi.',
+            'penerbit.required' => 'Nama penerbit wajib diisi.',
+            'tahun_terbit.required' => 'Tahun terbit wajib diisi.',
+            'tahun_terbit.integer' => 'Tahun terbit harus berupa angka.',
+            'tahun_terbit.min' => 'Tahun terbit tidak valid.',
+            'tahun_terbit.max' => 'Tahun terbit tidak boleh lebih dari tahun sekarang.',
+            'isbn.max' => 'ISBN maksimal 20 karakter.',
+            'stok.required' => 'Stok wajib diisi.',
+            'stok.integer' => 'Stok harus berupa angka.',
+            'stok.min' => 'Stok tidak boleh kurang dari 0.',
+            'category_id.required' => 'Kategori wajib dipilih.',
+        ];
     }
 }

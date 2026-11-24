@@ -1,55 +1,53 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Daftar Buku</title>
-    <style>
-        body { font-family: sans-serif; margin: 40px; }
-        table { border-collapse: collapse; width: 100%; margin-top: 16px; }
-        th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-        .success { background: #d1fae5; color: #065f46; padding: 10px 14px; border-radius: 4px; margin-top: 16px; }
-        .btn { display: inline-block; padding: 6px 14px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 4px; }
-        form.inline { display: inline; }
-    </style>
-</head>
-<body>
-    <h1>Daftar Buku</h1>
+﻿@extends('layouts.app')
 
-    @if (session('success'))
-        <div class="success">{{ session('success') }}</div>
-    @endif
+@section('title', 'Daftar Anggota - Perpustakaan Digital Kampus')
 
-    <p><a href="{{ route('books.create') }}" class="btn">+ Tambah Buku</a></p>
+@section('content')
+    <h1>Daftar Anggota</h1>
+
+    <p>
+        <a href="{{ route('members.create') }}" class="btn">+ Tambah Anggota</a>
+    </p>
+
+    <form action="{{ route('members.index') }}" method="GET">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama anggota...">
+        <button type="submit" class="submit-btn">Cari</button>
+        @if (request('search'))
+            <a href="{{ route('members.index') }}">Reset</a>
+        @endif
+    </form>
 
     <table>
         <thead>
             <tr>
+                <th>No</th>
                 <th>ID</th>
-                <th>Judul</th>
-                <th>Penulis</th>
-                <th>Penerbit</th>
-                <th>Tahun</th>
-                <th>Stok</th>
-                <th>Kategori</th>
+                <th>Nama</th>
+                <th>NIM</th>
+                <th>Email</th>
+                <th>No. Telepon</th>
+                <th>Alamat</th>
+                <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($books as $book)
+            @forelse ($members as $member)
                 <tr>
-                    <td>{{ $book['id'] }}</td>
-                    <td>{{ $book['judul'] }}</td>
-                    <td>{{ $book['penulis'] }}</td>
-                    <td>{{ $book['penerbit'] }}</td>
-                    <td>{{ $book['tahun_terbit'] }}</td>
-                    <td>{{ $book['stok'] }}</td>
-                    <td>{{ $book['kategori'] }}</td>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $member['id'] }}</td>
+                    <td>{{ $member['nama'] }}</td>
+                    <td>{{ $member['nim'] }}</td>
+                    <td>{{ $member['email'] }}</td>
+                    <td>{{ $member['nomor_telepon'] }}</td>
+                    <td>{{ $member['alamat'] }}</td>
+                    <td>{{ ucfirst($member['status']) }}</td>
                     <td>
-                        <a href="{{ route('books.show', $book['id']) }}">Detail</a>
+                        <a href="{{ route('members.show', $member['id']) }}">Detail</a>
                         |
-                        <a href="{{ route('books.edit', $book['id']) }}">Edit</a>
+                        <a href="{{ route('members.edit', $member['id']) }}">Edit</a>
                         |
-                        <form class="inline" action="{{ route('books.destroy', $book['id']) }}" method="POST">
+                        <form class="inline" action="{{ route('members.destroy', $member['id']) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus anggota ini?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit">Hapus</button>
@@ -58,50 +56,11 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8">Belum ada data buku.</td>
+                    <td colspan="9">Belum ada data anggota.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
-    <p><em>Catatan: data di atas masih data dummy (array statis di Controller), belum dari database. Migration &amp; Model Eloquent baru dibuat di Pertemuan 5.</em></p>
-</body>
-</html>
-@extends('layouts.app')
-
-@section('title', 'Daftar Anggota')
-
-@section('content')
-    <h1>Daftar Anggota</h1>
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nama</th>
-                <th>NIM</th>
-                <th>Email</th>
-                <th>No. Telepon</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($members as $member)
-                <tr>
-                    <td>{{ $member['id'] }}</td>
-                    <td>{{ $member['nama'] }}</td>
-                    <td>{{ $member['nim'] }}</td>
-                    <td>{{ $member['email'] }}</td>
-                    <td>{{ $member['nomor_telepon'] }}</td>
-                    <td>{{ ucfirst($member['status']) }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6">Belum ada data anggota.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <p><em>Catatan: data di atas masih data dummy (array statis di Controller). Form tambah/edit anggota dan CRUD lengkap anggota baru dibuat mulai Pertemuan 5.</em></p>
+    {{ $members->appends(request()->query())->links() }}
 @endsection

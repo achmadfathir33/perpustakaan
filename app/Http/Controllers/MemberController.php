@@ -34,7 +34,7 @@ class MemberController extends Controller
 
     public function show(string $id)
     {
-        $member = Member::findOrFail($id);
+        $member = Member::with(['loans.loanItems.book', 'loans.user'])->findOrFail($id);
 
         return view('members.show', compact('member'));
     }
@@ -56,7 +56,7 @@ class MemberController extends Controller
             'email' => 'required|email|max:100|unique:members,email,'.$member->id,
             'nomor_telepon' => 'required|string|max:15',
             'alamat' => 'required|string',
-            'status' => 'required|string|in:aktif,nonaktif',
+            'status' => 'required|in:aktif,nonaktif',
         ]);
 
         $member->update($validated);

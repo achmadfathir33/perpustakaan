@@ -1,28 +1,39 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Perpustakaan Digital Kampus')</title>
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: sans-serif; margin: 0; color: #1f2937; }
-        nav { background: #1e3a8a; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-        nav .brand { color: #fff; font-weight: bold; font-size: 18px; }
-        nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; }
-        nav ul li a { color: #cbd5e1; text-decoration: none; padding: 6px 4px; }
-        nav ul li a.active { color: #fff; font-weight: bold; border-bottom: 2px solid #fff; }
-        main { max-width: 900px; margin: 0 auto; padding: 30px 40px; }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: sans-serif; margin: 0; color: #1f2937; background-color: #ffffff; }
+        nav.navbar { background: #1e3a8a; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        nav.navbar .brand a { color: #fff; font-weight: bold; font-size: 18px; text-decoration: none; }
+        nav.navbar ul.nav-links { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; flex-wrap: wrap; }
+        nav.navbar ul.nav-links li a { color: #cbd5e1; text-decoration: none; padding: 6px 4px; display: inline-block; }
+        nav.navbar ul.nav-links li a:hover { color: #fff; }
+        nav.navbar ul.nav-links li a.active { color: #fff; font-weight: bold; border-bottom: 2px solid #fff; }
+        nav.navbar ul.nav-links li a.disabled { color: #94a3b8; cursor: not-allowed; }
+        main { max-width: 900px; margin: 0 auto; padding: 30px 40px; min-height: 65vh; }
         table { border-collapse: collapse; width: 100%; margin-top: 16px; }
         th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+        th { background-color: #f8fafc; }
         .alert-success { background: #d1fae5; color: #065f46; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; }
         .btn { display: inline-block; padding: 6px 14px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
+        .btn:hover { background: #1d4ed8; }
         form.inline { display: inline; }
         label { display: block; margin-top: 12px; font-weight: bold; }
-        input, select, textarea { width: 100%; max-width: 500px; padding: 6px; margin-top: 4px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; max-width: 500px; padding: 6px 8px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 4px; }
         .error { color: #b91c1c; font-size: 14px; margin-top: 4px; }
         .submit-btn { margin-top: 20px; padding: 8px 16px; background: #2563eb; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        .submit-btn:hover { background: #1d4ed8; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 12px; font-weight: bold; }
+        .badge-dipinjam { background: #fef3c7; color: #92400e; }
+        .badge-dikembalikan { background: #d1fae5; color: #065f46; }
+        .badge-terlambat { background: #fee2e2; color: #991b1b; }
         footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
     </style>
+    @stack('styles')
 </head>
 <body>
     @include('partials.navbar')
@@ -36,5 +47,7 @@
     <footer>
         &copy; {{ date('Y') }} Sistem Perpustakaan Digital Kampus
     </footer>
+
+    @stack('scripts')
 </body>
 </html>

@@ -1,46 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Saya - Perpustakaan Digital Kampus')
+@section('title', 'Profil Pengguna')
 
 @section('content')
-    <h1>Profil Saya</h1>
-
-    <table>
-        <tr>
-            <th>Nama</th>
-            <td>{{ $user['name'] }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ $user['email'] }}</td>
-        </tr>
-        <tr>
-            <th>Role</th>
-            <td>{{ ucfirst($user['role']) }}</td>
-        </tr>
-    </table>
-
-    <h2>Ganti Password</h2>
-
-    <form action="{{ route('profile.password') }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <label for="current_password">Password Lama</label>
-        <input type="password" name="current_password" id="current_password">
-        @error('current_password')
-            <div class="error">{{ $message }}</div>
-        @enderror
-
-        <label for="password">Password Baru</label>
-        <input type="password" name="password" id="password">
-        @error('password')
-            <div class="error">{{ $message }}</div>
-        @enderror
-
-        <label for="password_confirmation">Konfirmasi Password Baru</label>
-        <input type="password" name="password_confirmation" id="password_confirmation">
-
-        <button type="submit" class="submit-btn">Simpan Password Baru</button>
-    </form>
+<div class="container py-4">
+    <h1 class="h4 mb-3">Profil Pengguna</h1>
+    <div class="card">
+        <div class="card-body">
+            <p class="mb-2"><strong>Nama:</strong> {{ $user->name }}</p>
+            <p class="mb-2"><strong>Email:</strong> {{ $user->email }}</p>
+            <p class="mb-0"><strong>Role:</strong> {{ $user->role ?? '-' }}</p>
+        </div>
+    </div>
+</div>
 @endsection

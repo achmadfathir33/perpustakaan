@@ -6,6 +6,8 @@ use App\Models\Book;
 use App\Models\Loan;
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class LoanController extends Controller
 {
@@ -16,12 +18,44 @@ class LoanController extends Controller
         return view('loans.index', compact('loans'));
     }
 
+    public function report(Request $request)
+    {
+        $body = ['data' => [], 'meta' => null];
+        $page = $request->query('page', 1);
+
+        $baseUrl = rtrim((string) config('services.internal_api.base_url', 'http://127.0.0.1:8011'), '/');
+        $urls = array_unique([
+            $baseUrl . '/api/loans',
+            str_replace('127.0.0.1', 'localhost', $baseUrl) . '/api/loans',
+        ]);
+
+        foreach ($urls as $url) {
+            try {
+                $response = Http::connectTimeout(2)->timeout(4)->get($url, ['page' => $page]);
+
+                if ($response->successful()) {
+                    $json = $response->json();
+                    if (is_array($json)) {
+                        $body = $json;
+                        break;
+                    }
+                }
+            } catch (Throwable $e) {
+            }
+        }
+
+        return view('loans.report', [
+            'loans' => $body['data'] ?? [],
+            'meta' => $body['meta'] ?? null,
+        ]);
+    }
+
     public function create()
     {
-        $members = Member::all();
-        $books = Book::all();
-
-        return view('loans.create', compact('members', 'books'));
+        return view('loans.create', [
+            'members' => Member::all(),
+            'books' => Book::all(),
+        ]);
     }
 
     public function store(Request $request)
@@ -51,16 +85,16 @@ class LoanController extends Controller
 
     public function show(string $id)
     {
-        $loan = Loan::with(['member', 'user', 'loanItems.book'])->findOrFail($id);
-
-        return view('loans.show', compact('loan'));
+        return view('loans.show', [
+            'loan' => Loan::with(['member', 'user', 'loanItems.book'])->findOrFail($id),
+        ]);
     }
 
     public function edit(string $id)
     {
-        $loan = Loan::with(['member', 'user', 'loanItems.book'])->findOrFail($id);
-
-        return view('loans.edit', compact('loan'));
+        return view('loans.edit', [
+            'loan' => Loan::with(['member', 'user', 'loanItems.book'])->findOrFail($id),
+        ]);
     }
 
     public function update(Request $request, string $id)
